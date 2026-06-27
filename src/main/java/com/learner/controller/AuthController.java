@@ -13,7 +13,21 @@ import java.util.List;
 public class AuthController {
 
     @GetMapping("generate/token")
-    public ResponseEntity<String> auth(@RequestHeader MultiValueMap<String, List<String>> multiValueMap,
+    @CrossOrigin(origins = "http://ec2-16-112-222-24.ap-south-2.compute.amazonaws.com")
+    public ResponseEntity<?> auth(@RequestParam("username") String username, @RequestParam("password") String password ) {
+
+        System.out.println("username: " + username);
+        System.out.println("password: " + password);
+
+        HttpHeaders headers = new HttpHeaders();
+        String cookie = String.format("auth-token=%s123; token=%s456", username, password);
+        headers.add(HttpHeaders.SET_COOKIE, cookie);
+        return new ResponseEntity<>(headers, HttpStatus.OK);
+    }
+
+    @GetMapping("generate/token/withookie")
+    @CrossOrigin(origins = "http://ec2-16-112-222-24.ap-south-2.compute.amazonaws.com")
+    public ResponseEntity<?> auth(@RequestHeader MultiValueMap<String, List<String>> multiValueMap,
                                        @CookieValue("username") String username, @CookieValue("password")  String password) {
         multiValueMap.forEach((c,v)->{
             System.out.printf("%s=%s%n",c,v);
